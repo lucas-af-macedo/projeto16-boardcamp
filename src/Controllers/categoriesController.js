@@ -1,14 +1,24 @@
-import express from "express";
 import connection from "../db/db.js";
 
 export async function getCategories(req, res){
     try{
         const categories = await connection.query("SELECT * FROM categories");
-        console.log(categories.rows);
+
         res.status(200).send(categories.rows);
     } catch(err){
         console.log(err);
         res.sendStatus(500);
-        return;
+    }
+}
+
+export async function postCategories(req, res){
+    const name = res.locals.categories.name;
+    
+    try{
+        await connection.query("INSERT INTO categories (name) VALUES ($1)",[name]);
+        res.status(200).send('ok');
+    } catch(err){
+        console.log(err);
+        res.sendStatus(500);
     }
 }

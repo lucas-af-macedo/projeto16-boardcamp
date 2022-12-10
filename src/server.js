@@ -1,6 +1,11 @@
 import express from 'express';
 import cors from 'cors';
 import router from './Routes/indexRouter.js';
+import { stripHtml } from 'string-strip-html';
+
+
+export const cleanStringData = (string) =>
+	stripHtml(string).result.trim();
 
 const app = express();
 app.use(cors());
