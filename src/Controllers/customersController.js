@@ -38,9 +38,19 @@ export async function postCustomers(req, res){
 }
 
 export async function putCustomers(req, res){
+    const customer = res.locals.customer;
+    const  id = req.params.id;
+
     try{
-        console.log('not implemented');
-        res.sendStatus(501);
+        await connection.query(`
+            UPDATE 
+                customers 
+            SET
+                name=$1, phone=$2, cpf=$3, birthday=$4
+            WHERE
+                id=$5`,
+            [customer.name, customer.phone, customer.cpf, customer.birthday, id]);
+        res.sendStatus(200)
     } catch(err){
         console.log(err);
         res.sendStatus(500);
