@@ -1,9 +1,12 @@
 import connection from "../db/db.js";
 
 export async function getCustomers(req, res){
+    const cpf = req.query?.cpf==undefined?"":req.query.cpf;
+
     try{
-        console.log('not implemented1');
-        res.sendStatus(501);
+        const customers = await connection.query(`SELECT * FROM customers WHERE cpf LIKE $1 || '%'`,[cpf]);
+
+        res.status(200).send(customers.rows);
     } catch(err){
         console.log(err);
         res.sendStatus(500);
