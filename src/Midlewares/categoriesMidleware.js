@@ -4,9 +4,13 @@ import { cleanStringData } from "../server.js";
 
 
 export async function categoryValidation(req, res, next){
-    const categories = {
-        name: req.body?.name!==undefined? cleanStringData(req.body?.name):undefined
-    };
+    console.log(req.body)
+    const categories = {};
+
+    Object.keys(req.body).forEach((key)=>(
+        categories[key] = cleanStringData(req.body[key])
+    ));
+
 
 	const validation = categoriesSchema.validate(categories, { abortEarly: false });
 

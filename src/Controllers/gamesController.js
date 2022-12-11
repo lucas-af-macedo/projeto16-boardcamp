@@ -25,8 +25,13 @@ export async function postGames(req, res){
     const games = res.locals.games;
     
     try{
-        await connection.query('INSERT INTO games (name, image, "stockTotal", "categoryId", "pricePerDay") VALUES ($1, $2, $3, $4, $5)',[games.name, games.image, games.stockTotal, games.categoryId, games.pricePerDay]);
-        res.sendStatus(200)
+        await connection.query(`
+            INSERT INTO  
+                games (name, image, "stockTotal", "categoryId", "pricePerDay") 
+            VALUES 
+                ($1, $2, $3, $4, $5)`,
+            [games.name, games.image, games.stockTotal, games.categoryId, games.pricePerDay]);
+        res.sendStatus(201)
     } catch(err){
         console.log(err);
         res.sendStatus(500);

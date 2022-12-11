@@ -16,7 +16,7 @@ export async function postCategories(req, res){
     
     try{
         await connection.query("INSERT INTO categories (name) VALUES ($1)",[name]);
-        res.status(200).send('ok');
+        res.sendStatus(201);
     } catch(err){
         console.log(err);
         res.sendStatus(500);

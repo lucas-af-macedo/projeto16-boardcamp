@@ -5,7 +5,7 @@ import { stripHtml } from 'string-strip-html';
 
 
 export const cleanStringData = (string) =>
-	stripHtml(string).result.trim();
+	typeof string=="string"?stripHtml(string).result.trim():string;
 
 const app = express();
 app.use(cors());

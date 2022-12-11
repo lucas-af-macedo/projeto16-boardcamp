@@ -4,10 +4,9 @@ import { cleanStringData } from "../server.js";
 
 
 export async function gamesValidation(req, res, next){
-    console.log(req.body?.image)
     const games = {
-        name: req.body?.name!==undefined ? cleanStringData(req.body?.name):undefined,
-        image: req.body?.image!==undefined ? cleanStringData(req.body?.image):undefined,
+        name: cleanStringData(req.body?.name),
+        image: cleanStringData(req.body?.image),
         stockTotal: req.body?.stockTotal,
         categoryId: req.body?.categoryId,
         pricePerDay: req.body?.pricePerDay
