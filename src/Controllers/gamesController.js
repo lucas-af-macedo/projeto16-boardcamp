@@ -2,8 +2,19 @@ import connection from "../db/db.js";
 
 export async function getGames(req, res){
     try{
-        console.log('not implemented')
-        res.sendStatus(501)
+        const games = await connection.query(`
+            SELECT 
+                games.*,
+                categories.name  AS "categoryName" 
+            FROM 
+                games 
+            JOIN 
+                categories 
+            ON 
+                games."categoryId"=categories.id
+        `);
+        
+        res.status(200).send(games.rows);
     } catch(err){
         console.log(err);
         res.sendStatus(500);
