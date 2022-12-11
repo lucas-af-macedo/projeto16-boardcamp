@@ -3,9 +3,9 @@ import { categoriesSchema } from "../Schemas/categoriesSchema.js";
 import { cleanStringData } from "../server.js";
 
 
-export async function categorieValidation(req, res, next){
+export async function categoryValidation(req, res, next){
     const categories = {
-        name: cleanStringData(req.body?.name)
+        name: req.body?.name!==undefined? cleanStringData(req.body?.name):undefined
     };
 
 	const validation = categoriesSchema.validate(categories, { abortEarly: false });
@@ -20,12 +20,12 @@ export async function categorieValidation(req, res, next){
 	next();
 }
 
-export async function equalCategorie(req, res, next){
+export async function equalCategory(req, res, next){
     const name = res.locals.categories.name;
     try{
-        const categorie = await connection.query("SELECT * FROM categories WHERE name=$1",[name]);
+        const category = await connection.query("SELECT * FROM categories WHERE name=$1",[name]);
 
-        if (categorie.rows.length){
+        if (category.rows.length){
             res.sendStatus(409);
             return;
         }
