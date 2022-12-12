@@ -80,3 +80,24 @@ export async function existRentals(req, res, next){
         res.sendStatus(500);
     }
 }
+
+export async function existRentalsDelete(req, res, next){
+    const rentalId = req.params.id;
+    
+    try{
+        const rental = await connection.query("SELECT * FROM rentals WHERE id=$1",[rentalId]);
+
+        if (!rental.rows.length){
+            res.sendStatus(404);
+            return;
+        }else if (rental.rows[0].returnDate===null){
+            res.sendStatus(400);
+            return;
+        }
+        res.locals.rental = rental.rows[0];
+        next();
+    }catch (err){
+        console.log(err);
+        res.sendStatus(500);
+    }
+}

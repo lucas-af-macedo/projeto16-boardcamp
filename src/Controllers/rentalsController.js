@@ -49,7 +49,6 @@ export async function returnRentals(req, res){
     const id = Number(req.params.id);
     const now = dayjs().format("YYYY-MM-DD");
     let delayDays = dayjs(now).diff(rental.rentDate, 'day') - rental.daysRented;
-    console.log(delayDays)
 
     if(delayDays<0){
         delayDays = 0;
@@ -86,9 +85,12 @@ export async function returnRentals(req, res){
 }
 
 export async function deleteRentals(req, res){
+    const id = req.params.id;
+
     try{
-        console.log('not implemented');
-        res.sendStatus(501);
+        await connection.query(`DELETE FROM rentals WHERE id=$1`,[id]);
+        
+        res.sendStatus(200);
     } catch(err){
         console.log(err);
         res.sendStatus(500);
