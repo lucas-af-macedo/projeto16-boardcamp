@@ -1,6 +1,12 @@
 import express from 'express';
 import { getRentals, postRentals, returnRentals, deleteRentals } from '../Controllers/rentalsController.js';
-import { rentalsValidation, existCustomer, existGame, existRentals, existRentalsDelete } from '../Midlewares/rentalsMidleware.js';
+import { 
+    rentalsValidation, 
+    existCustomer, 
+    existGame, 
+    existRentals, 
+    existRentalsDelete 
+} from '../Midlewares/rentalsMidleware.js';
 
 const rentalsRouter = express.Router();
 

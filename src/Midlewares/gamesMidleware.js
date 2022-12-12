@@ -2,15 +2,12 @@ import connection from "../db/db.js";
 import { gamesSchema } from "../Schemas/gamesSchema.js";
 import { cleanStringData } from "../server.js";
 
+export async function gamesValidation(req, res, next) {
+	const games = {};
 
-export async function gamesValidation(req, res, next){
-    const games = {
-        name: cleanStringData(req.body?.name),
-        image: cleanStringData(req.body?.image),
-        stockTotal: req.body?.stockTotal,
-        categoryId: req.body?.categoryId,
-        pricePerDay: req.body?.pricePerDay
-    };
+    Object.keys(req.body).forEach(
+		(key) => (games[key] = cleanStringData(req.body[key]))
+	);
 
 	const validation = gamesSchema.validate(games, { abortEarly: false });
 
@@ -24,34 +21,39 @@ export async function gamesValidation(req, res, next){
 	next();
 }
 
-export async function existCategory(req, res, next){
-    const categoryId = res.locals.games.categoryId;
-    try{
-        const category = await connection.query("SELECT * FROM categories WHERE id=$1",[categoryId]);
+export async function existCategory(req, res, next) {
+	const categoryId = res.locals.games.categoryId;
+	try {
+		const category = await connection.query(
+			"SELECT * FROM categories WHERE id=$1",
+			[categoryId]
+		);
 
-        if (!category.rows.length){
-            res.sendStatus(400);
-            return;
-        }
-        next();
-    }catch (err){
-        console.log(err);
-        res.sendStatus(500);
-    }
+		if (!category.rows.length) {
+			res.sendStatus(400);
+			return;
+		}
+		next();
+	} catch (err) {
+		console.log(err);
+		res.sendStatus(500);
+	}
 }
 
-export async function equalGame(req, res, next){
-    const name = res.locals.games.name;
-    try{
-        const games = await connection.query("SELECT * FROM games WHERE name=$1",[name]);
+export async function equalGame(req, res, next) {
+	const name = res.locals.games.name;
+	try {
+		const games = await connection.query("SELECT * FROM games WHERE name=$1", [
+			name,
+		]);
 
-        if (games.rows.length){
-            res.sendStatus(409);
-            return;
-        }
-        next();
-    }catch (err){
-        console.log(err);
-        res.sendStatus(500);
-    }
+		if (games.rows.length) {
+			res.sendStatus(409);
+			return;
+		}
+		next();
+	} catch (err) {
+		console.log(err);
+		res.sendStatus(500);
+	}
 }
