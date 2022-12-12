@@ -1,7 +1,7 @@
 import connection from "../db/db.js";
 
 export async function getCustomers(req, res){
-    const cpf = req.query?.cpf==undefined?"":req.query.cpf;
+    const cpf = (req.query?.cpf===undefined) ? "" : req.query.cpf;
 
     try{
         const customers = await connection.query(`SELECT * FROM customers WHERE cpf LIKE $1 || '%'`,[cpf]);
@@ -13,10 +13,18 @@ export async function getCustomers(req, res){
     }
 }
 
-export async function getACustomers(req, res){
+export async function getCustomersById(req, res){
+    const id = req.params.id;
+
     try{
-        console.log('not implemented2');
-        res.sendStatus(501);
+        const customers = await connection.query(`SELECT * FROM customers WHERE id=$1`,[id]);
+
+        if(!customers.rows.length){
+            res.sendStatus(404);
+            return;
+        }
+
+        res.status(200).send(customers.rows[0]);
     } catch(err){
         console.log(err);
         res.sendStatus(500);
