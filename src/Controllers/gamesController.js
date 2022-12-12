@@ -1,6 +1,8 @@
 import connection from "../db/db.js";
 
 export async function getGames(req, res){
+    const name = (req.query?.name===undefined) ? "" : req.query.name;
+
     try{
         const games = await connection.query(`
             SELECT 
@@ -12,7 +14,11 @@ export async function getGames(req, res){
                 categories 
             ON 
                 games."categoryId"=categories.id
-        `);
+            WHERE
+                games.name
+            LIKE
+                $1 || '%'
+        `,[name]);
         
         res.status(200).send(games.rows);
     } catch(err){

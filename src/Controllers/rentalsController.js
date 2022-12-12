@@ -2,9 +2,50 @@ import connection from "../db/db.js";
 import dayjs from "dayjs";
 
 export async function getRentals(req, res){
+    const customerId = (req.query?.customerId===undefined) ? 0 : req.query.customerId;
+    const gameId = (req.query?.gameId===undefined) ? 0 : req.query.gameId;
+
     try{
-        console.log('not implemented');
-        res.sendStatus(501);
+        const rentals = await connection.query(`
+            SELECT 
+                rentals.*,
+                json_build_object('id', customers.id, 'name', customers.name) AS "customer",
+                json_build_object('id', games.id, 'name', games.name, "categoryId", games."categoryId", 'categoryName', categories.name) AS game
+            FROM
+                rentals
+            INNER JOIN 
+                customers 
+            ON 
+                rentals."customerId"=customers.id
+            INNER JOIN 
+                games 
+            ON 
+                rentals."gameId"=games.id
+            JOIN 
+                categories 
+            ON 
+                games."categoryId"=categories.id
+            WHERE (
+                CASE 
+                    WHEN
+                        $1<>0
+                    THEN
+                        rentals."customerId"=$1
+                    ELSE TRUE
+                END
+            )
+            AND(
+                CASE 
+                    WHEN
+                        $2<>0
+                    THEN
+                        rentals."customerId"=$2
+                    ELSE TRUE
+                END
+            )
+        `,[customerId, gameId]);
+        
+        res.status(200).send(rentals.rows);
     } catch(err){
         console.log(err);
         res.sendStatus(500);

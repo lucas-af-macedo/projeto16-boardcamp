@@ -4,7 +4,7 @@ import { gamesValidation, existCategory, equalGame } from '../Midlewares/gamesMi
 
 const gamesRouter = express.Router();
 
-gamesRouter.get('/games', getGames);
+gamesRouter.get('/games:name?', getGames);
 gamesRouter.post('/games', gamesValidation, equalGame, existCategory, postGames);
 
 export default gamesRouter;

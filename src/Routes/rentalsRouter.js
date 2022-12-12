@@ -4,7 +4,7 @@ import { rentalsValidation, existCustomer, existGame, existRentals, existRentals
 
 const rentalsRouter = express.Router();
 
-rentalsRouter.get('/rentals', getRentals);
+rentalsRouter.get('/rentals:customerId?:gameId?', getRentals);
 rentalsRouter.post('/rentals', rentalsValidation, existCustomer, existGame, postRentals);
 rentalsRouter.post('/rentals/:id/return', existRentals, returnRentals);
 rentalsRouter.delete('/rentals/:id', existRentalsDelete, deleteRentals);
