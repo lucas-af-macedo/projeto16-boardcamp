@@ -4,7 +4,6 @@ import { cleanStringData } from "../server.js";
 
 
 export async function categoryValidation(req, res, next){
-    console.log(req.body)
     const categories = {};
 
     Object.keys(req.body).forEach((key)=>(
