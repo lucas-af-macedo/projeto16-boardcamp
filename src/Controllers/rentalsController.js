@@ -45,9 +45,40 @@ export async function postRentals(req, res){
 }
 
 export async function returnRentals(req, res){
+    const rental = res.locals.rental
+    const id = Number(req.params.id);
+    const now = dayjs().format("YYYY-MM-DD");
+    let delayDays = dayjs(now).diff(rental.rentDate, 'day') - rental.daysRented;
+    console.log(delayDays)
+
+    if(delayDays<0){
+        delayDays = 0;
+    }
+
     try{
-        console.log('not implemented');
-        res.sendStatus(501);
+        const game = (await connection.query(`SELECT * FROM games WHERE id=$1`,[rental.gameId])).rows[0];
+        const delayFee = delayDays * game.pricePerDay;
+        const stockFinal = game.stockTotal + 1;
+
+        await connection.query(`
+            UPDATE 
+                rentals 
+            SET
+                "returnDate"=$1, "delayFee"=$2
+            WHERE
+                id=$3`,
+            [now, delayFee, id]);
+        
+        res.sendStatus(200);
+
+        await connection.query(`
+            UPDATE 
+                games 
+            SET
+                "stockTotal"=$1
+            WHERE
+                id=$2`,
+            [stockFinal, game.id]);
     } catch(err){
         console.log(err);
         res.sendStatus(500);
